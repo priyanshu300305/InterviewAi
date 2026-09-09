@@ -3,8 +3,6 @@ const { generateInterviewReport, generateResumePdf } = require("../services/ai.s
 const interviewReportModel = require("../models/interviewReport.model")
 
 
-
-
 /**
  * @description Controller to generate interview report based on user self description, resume and job description.
  */
@@ -13,8 +11,15 @@ async function generateInterViewReportController(req, res) {
     let resumeText = ""
     if (req.file) {
         try {
-            const parsed = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
-            resumeText = parsed.text || ""
+            const parser = new PDFParse({
+                data: Uint8Array.from(req.file.buffer)
+            })
+
+            const parsed = await parser.getText()
+
+            resumeText = parsed.text
+
+            await parser.destroy() || ""
         } catch (e) {
             console.error("PDF Parsing error:", e)
         }
