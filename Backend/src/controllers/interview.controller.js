@@ -13,8 +13,13 @@ async function generateInterViewReportController(req, res) {
     let resumeText = ""
     if (req.file) {
         try {
-            const parsed = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
-            resumeText = parsed.text || ""
+            if (typeof pdfParse === "function") {
+                const parsed = await pdfParse(req.file.buffer)
+                resumeText = parsed.text || ""
+            } else if (pdfParse.PDFParse) {
+                const parsed = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
+                resumeText = parsed.text || ""
+            }
         } catch (e) {
             console.error("PDF Parsing error:", e)
         }
