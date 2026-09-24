@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 
 
@@ -58,6 +59,7 @@ const RoadMapDay = ({ day }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
+    const { user } = useAuth()
     const [ activeNav, setActiveNav ] = useState('technical')
     const [ downloadingPdf, setDownloadingPdf ] = useState(false)
     const { report, getReportById, loading, getResumePdf } = useInterview()
@@ -75,8 +77,6 @@ const Interview = () => {
         setDownloadingPdf(false)
     }
 
-
-
     if (loading || !report) {
         return (
             <main className='loading-screen'>
@@ -89,10 +89,27 @@ const Interview = () => {
         report.matchScore >= 80 ? 'score--high' :
             report.matchScore >= 60 ? 'score--mid' : 'score--low'
 
+    const userInitial = user?.username ? user.username.charAt(0).toUpperCase() : 'U'
 
     return (
-        <div className='interview-page'>
-            <div className='interview-layout'>
+        <>
+            <header className="navbar-header">
+                <a href="/" className="brand-logo">
+                    Interview<span>.AI</span>
+                </a>
+                <div style={{ display: 'flex', items: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#94a3b8', background: '#191c1d', padding: '0.25rem 0.75rem', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        Target: <strong style={{ color: '#f8fafc' }}>{report.title || 'Target Position'}</strong>
+                    </span>
+                    <div className="nav-user">
+                        <div className="avatar">{userInitial}</div>
+                        <span className="user-name">{user?.username || 'Candidate'}</span>
+                    </div>
+                </div>
+            </header>
+
+            <div className='interview-page'>
+                <div className='interview-layout'>
 
                 {/* ── Left Nav ── */}
                 <nav className='interview-nav'>
@@ -197,6 +214,7 @@ const Interview = () => {
                 </aside>
             </div>
         </div>
+        </>
     )
 }
 

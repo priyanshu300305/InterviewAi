@@ -1,18 +1,18 @@
-// ── Shared Variables (mirrors home.scss theme) ────────────────────────────────
-$bg-page: #F5F3EF;
-$bg-card: #FFFFFF;
-$bg-panel: #FFFFFF;
-$bg-input: #F5F3EF;
-$border-color: #7A8B99;
-$text-primary: #1F2937;
-$text-muted: #7A8B99;
-$accent: #D97757;
-$font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+// ── Shared Variables ────────────────────────────────────────────────────────
+$bg-page:        #0c0f10;
+$bg-card:        #111415;
+$bg-panel:       #171b1c;
+$bg-input:       #191c1d;
+$border-color:   rgba(255, 255, 255, 0.08);
+$text-primary:   #f8fafc;
+$text-muted:     #94a3b8;
+$accent:         #10b981;
+$font-stack:     'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
 
 // severity palette
-$severity-high: #ff4d4d;
-$severity-medium: #f5a623;
-$severity-low: #3fb950;
+$severity-high:   #f87171;
+$severity-medium: #fba770;
+$severity-low:    #34d399;
 
 *::-webkit-scrollbar {
     display: none;
@@ -27,20 +27,25 @@ $severity-low: #3fb950;
     font-family: $font-stack;
     display: flex;
     align-items: stretch;
-    padding: 1.5rem;
+    padding: 2rem;
     box-sizing: border-box;
 }
 
-// ── 3-Column Layout ───────────────────────────────────────────────────────────
+// ── 3-Column Master Layout ───────────────────────────────────────────────────
 .interview-layout {
     display: flex;
     width: 100%;
-    max-width: 1280px;
+    max-width: 1560px;
     margin: 0 auto;
     background-color: $bg-card;
     border: 1px solid $border-color;
-    border-radius: 1rem;
-    justify-content: space-between;
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+
+    @media (max-width: 992px) {
+        flex-direction: column;
+    }
 }
 
 .interview-divider {
@@ -51,54 +56,60 @@ $severity-low: #3fb950;
 
 // ── Left Nav ─────────────────────────────────────────────────────────────────
 .interview-nav {
-    width: 220px;
+    width: 260px;
     flex-shrink: 0;
-    padding: 1.75rem 1rem;
+    padding: 1.75rem 1.25rem;
+    background-color: #141718;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.25rem;
+    gap: 1rem;
 
-
-
+    .nav-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
     &__label {
         font-size: 0.7rem;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: $text-muted;
-        padding: 0 0.75rem;
+        letter-spacing: 0.1em;
+        color: #64748b;
+        padding: 0 0.5rem;
         margin-bottom: 0.5rem;
     }
 
     &__item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         width: 100%;
-        padding: 0.65rem 0.75rem;
-        background: none;
-        border: none;
-        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 0.75rem;
         color: $text-muted;
         font-family: $font-stack;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
+        font-weight: 500;
         cursor: pointer;
         text-align: left;
-        transition: background-color 0.15s, color 0.15s;
+        transition: all 0.2s;
 
         &:hover {
-            background-color: $bg-panel;
+            background-color: $bg-input;
             color: $text-primary;
         }
 
         &--active {
-            background-color: rgba($accent, 0.1);
-            color: $accent;
+            background-color: #2a1d1e;
+            color: #f87171;
+            border-color: rgba(248, 113, 113, 0.25);
 
             .interview-nav__icon svg {
-                stroke: $accent;
+                stroke: #f87171;
             }
         }
     }
@@ -113,19 +124,10 @@ $severity-low: #3fb950;
 // ── Center Content ────────────────────────────────────────────────────────────
 .interview-content {
     flex: 1;
-    padding: 1.75rem 2rem;
+    padding: 2rem 2.5rem;
     overflow-y: auto;
-    min-height: initial;
-    max-height: calc(100vh - 3rem);
+    max-height: calc(100vh - 4rem);
     padding-bottom: 5rem;
-    align-items: flex-start;
-
-
-
-
-
-
-
 
     section {
         min-height: 100%;
@@ -134,25 +136,26 @@ $severity-low: #3fb950;
 
 .content-header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid $border-color;
 
     h2 {
-        font-size: 1.1rem;
+        font-size: 1.35rem;
         font-weight: 700;
         color: $text-primary;
         margin: 0;
     }
 
     &__count {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        font-weight: 600;
         color: $text-muted;
-        background-color: $bg-panel;
-        padding: 0.15rem 0.6rem;
-        border-radius: 2rem;
+        background-color: $bg-input;
+        padding: 0.2rem 0.75rem;
+        border-radius: 9999px;
         border: 1px solid $border-color;
     }
 }
@@ -161,25 +164,26 @@ $severity-low: #3fb950;
 .q-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
 .q-card {
     background-color: $bg-panel;
     border: 1px solid $border-color;
-    border-radius: 0.6rem;
+    border-radius: 0.85rem;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
 
     &:hover {
-        border-color: lighten($border-color, 8%);
+        border-color: rgba(255, 255, 255, 0.18);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     &__header {
         display: flex;
         align-items: flex-start;
-        gap: 0.75rem;
-        padding: 0.9rem 1rem;
+        gap: 0.85rem;
+        padding: 1.1rem 1.25rem;
         cursor: pointer;
         user-select: none;
     }
@@ -188,18 +192,18 @@ $severity-low: #3fb950;
         flex-shrink: 0;
         font-size: 0.7rem;
         font-weight: 700;
-        color: $accent;
-        background-color: rgba($accent, 0.1);
-        border: 1px solid rgba($accent, 0.2);
-        border-radius: 0.3rem;
-        padding: 0.15rem 0.4rem;
-        margin-top: 2px;
+        color: #fba770;
+        background-color: #2b2420;
+        border: 1px solid rgba(251, 167, 112, 0.3);
+        border-radius: 0.4rem;
+        padding: 0.2rem 0.5rem;
+        margin-top: 1px;
     }
 
     &__question {
         flex: 1;
         margin: 0;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 500;
         color: $text-primary;
         line-height: 1.5;
@@ -218,46 +222,46 @@ $severity-low: #3fb950;
     }
 
     &__body {
-        padding: 0 1rem 1rem;
+        padding: 1.25rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1rem;
         border-top: 1px solid $border-color;
-        padding-top: 0.75rem;
+        background-color: rgba(19, 22, 23, 0.5);
     }
 
     &__section {
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.5rem;
 
         p {
             margin: 0;
-            font-size: 0.835rem;
-            color: lighten($text-muted, 15%);
+            font-size: 0.875rem;
+            color: #cbd5e1;
             line-height: 1.6;
         }
     }
 
     &__tag {
-        font-size: 0.68rem;
+        font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        padding: 0.15rem 0.5rem;
-        border-radius: 0.25rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 0.35rem;
         width: fit-content;
 
         &--intention {
             color: #a78bfa;
-            background-color: rgba(#a78bfa, 0.1);
-            border: 1px solid rgba(#a78bfa, 0.2);
+            background-color: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.25);
         }
 
         &--answer {
-            color: #3fb950;
-            background-color: rgba(#3fb950, 0.1);
-            border: 1px solid rgba(#3fb950, 0.2);
+            color: #34d399;
+            background-color: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.25);
         }
     }
 }
@@ -269,7 +273,6 @@ $severity-low: #3fb950;
     gap: 0;
     position: relative;
 
-    // vertical timeline line
     &::before {
         content: '';
         position: absolute;
@@ -277,7 +280,7 @@ $severity-low: #3fb950;
         top: 0;
         bottom: 0;
         width: 2px;
-        background: linear-gradient(to bottom, $accent, rgba($accent, 0.1));
+        background: linear-gradient(to bottom, $accent, rgba(16, 185, 129, 0.1));
         border-radius: 1px;
     }
 }
@@ -285,16 +288,15 @@ $severity-low: #3fb950;
 .roadmap-day {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem 0 0.75rem 3.5rem;
+    gap: 0.6rem;
+    padding: 1rem 0 1rem 3.5rem;
     position: relative;
 
-    // dot on timeline
     &::before {
         content: '';
         position: absolute;
         left: 21px;
-        top: 1.05rem;
+        top: 1.25rem;
         width: 14px;
         height: 14px;
         border-radius: 50%;
@@ -305,22 +307,22 @@ $severity-low: #3fb950;
     &__header {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
     }
 
     &__badge {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         font-weight: 700;
         color: $accent;
-        background-color: rgba($accent, 0.1);
-        border: 1px solid rgba($accent, 0.25);
-        padding: 0.1rem 0.5rem;
-        border-radius: 2rem;
+        background-color: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        padding: 0.2rem 0.6rem;
+        border-radius: 9999px;
     }
 
     &__focus {
         margin: 0;
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 600;
         color: $text-primary;
     }
@@ -331,36 +333,37 @@ $severity-low: #3fb950;
         padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.35rem;
+        gap: 0.4rem;
 
         li {
             display: flex;
             align-items: flex-start;
-            gap: 0.5rem;
-            font-size: 0.845rem;
-            color: lighten($text-muted, 12%);
+            gap: 0.6rem;
+            font-size: 0.875rem;
+            color: #cbd5e1;
             line-height: 1.5;
         }
     }
 
     &__bullet {
         flex-shrink: 0;
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background-color: $text-muted;
-        margin-top: 8px;
+        background-color: $accent;
+        margin-top: 7px;
     }
 }
 
 // ── Right Sidebar ─────────────────────────────────────────────────────────────
 .interview-sidebar {
-    width: 240px;
+    width: 280px;
     flex-shrink: 0;
-    padding: 1.75rem 1.25rem;
+    padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
+    background-color: #141718;
 }
 
 .sidebar-divider {
@@ -368,48 +371,53 @@ $severity-low: #3fb950;
     background-color: $border-color;
 }
 
-// Match Score
+// Match Score Gauge
 .match-score {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.75rem;
 
     &__label {
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: $text-muted;
+        letter-spacing: 0.1em;
+        color: #64748b;
         margin: 0;
         align-self: flex-start;
     }
 
     &__ring {
-        width: 90px;
-        height: 90px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         border: 4px solid;
+        background-color: rgba(17, 20, 21, 0.8);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 
         &.score--high {
-            border-color: $severity-low;
+            border-color: #10b981;
+            color: #34d399;
         }
 
         &.score--mid {
-            border-color: $severity-medium;
+            border-color: #fba770;
+            color: #fba770;
         }
 
         &.score--low {
-            border-color: $severity-high;
+            border-color: #f87171;
+            color: #f87171;
         }
     }
 
     &__value {
-        font-size: 1.6rem;
+        font-size: 1.85rem;
         font-weight: 800;
         color: $text-primary;
         line-height: 1;
@@ -418,14 +426,14 @@ $severity-low: #3fb950;
     &__pct {
         font-size: 0.75rem;
         color: $text-muted;
-        margin-top: -2px;
     }
 
     &__sub {
         margin: 0;
-        font-size: 0.75rem;
-        color: $severity-low;
+        font-size: 0.8rem;
+        color: #34d399;
         text-align: center;
+        font-weight: 500;
     }
 }
 
@@ -433,14 +441,14 @@ $severity-low: #3fb950;
 .skill-gaps {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
 
     &__label {
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: $text-muted;
+        letter-spacing: 0.1em;
+        color: #64748b;
         margin: 0;
     }
 
@@ -452,28 +460,28 @@ $severity-low: #3fb950;
 }
 
 .skill-tag {
-    font-size: 0.775rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    padding: 0.3rem 0.7rem;
-    border-radius: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 9999px;
     border: 1px solid;
     cursor: default;
 
     &--high {
         color: $severity-high;
-        background-color: rgba($severity-high, 0.1);
-        border-color: rgba($severity-high, 0.25);
+        background-color: rgba(248, 113, 113, 0.1);
+        border-color: rgba(248, 113, 113, 0.25);
     }
 
     &--medium {
         color: $severity-medium;
-        background-color: rgba($severity-medium, 0.1);
-        border-color: rgba($severity-medium, 0.25);
+        background-color: rgba(251, 167, 112, 0.1);
+        border-color: rgba(251, 167, 112, 0.25);
     }
 
     &--low {
         color: $severity-low;
-        background-color: rgba($severity-low, 0.1);
-        border-color: rgba($severity-low, 0.25);
+        background-color: rgba(52, 211, 153, 0.1);
+        border-color: rgba(52, 211, 153, 0.25);
     }
 }

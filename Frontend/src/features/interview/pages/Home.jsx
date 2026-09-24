@@ -3,9 +3,12 @@ import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
 
+import { useAuth } from '../../auth/hooks/useAuth.js'
+
 const Home = () => {
 
-    const { loading, generateReport,reports } = useInterview()
+    const { user } = useAuth()
+    const { loading, generateReport, reports } = useInterview()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
     const [ fileName, setFileName ] = useState("")
@@ -48,14 +51,26 @@ const Home = () => {
         )
     }
 
-    return (
-        <div className='home-page'>
+    const userInitial = user?.username ? user.username.charAt(0).toUpperCase() : 'U'
 
-            {/* Page Header */}
-            <header className='page-header'>
-                <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
-                <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+    return (
+        <>
+            <header className="navbar-header">
+                <a href="#" className="brand-logo">
+                    Interview<span>.AI</span>
+                </a>
+                <div className="nav-user">
+                    <div className="avatar">{userInitial}</div>
+                    <span className="user-name">{user?.username || 'Candidate'}</span>
+                </div>
             </header>
+
+            <div className='home-page'>
+                {/* Page Header */}
+                <header className='page-header'>
+                    <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
+                    <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+                </header>
 
             {/* Main Card */}
             <div className='interview-card'>
@@ -184,6 +199,7 @@ const Home = () => {
                 <a href='#'>Help Center</a>
             </footer>
         </div>
+        </>
     )
 }
 
