@@ -61,27 +61,22 @@ export const useInterview = () => {
 
     const getResumePdf = async (interviewReportId) => {
         try {
-            const response = await generateResumePdf({ interviewReportId })
+            const blob = await generateResumePdf({ interviewReportId })
+            const text = await blob.text()
 
-            if (typeof response === "string" && response.includes("<!DOCTYPE html>")) {
+            if (text.includes("<!DOCTYPE html>") || text.includes("<html")) {
                 const printWin = window.open("", "_blank")
-                printWin.document.write(response)
-                printWin.document.close()
+                if (printWin) {
+                    printWin.document.open()
+                    printWin.document.write(text)
+                    printWin.document.close()
+                } else {
+                    alert("Please allow popups to view and print your resume.")
+                }
                 return { success: true }
             }
 
-            const blob = new Blob([ response ], { type: response.type || "application/pdf" })
-
-            if (blob.type === "text/html") {
-                const text = await blob.text()
-                const printWin = window.open("", "_blank")
-                printWin.document.write(text)
-                printWin.document.close()
-                return { success: true }
-            }
-
-            if (blob.type === "application/json") {
-                const text = await blob.text()
+            if (blob.type === "application/json" || text.startsWith("{")) {
                 try {
                     const errData = JSON.parse(text)
                     alert(errData.message || "Failed to generate resume PDF.")
@@ -89,7 +84,8 @@ export const useInterview = () => {
                 } catch (e) {}
             }
 
-            const url = window.URL.createObjectURL(blob)
+            const pdfBlob = new Blob([ blob ], { type: "application/pdf" })
+            const url = window.URL.createObjectURL(pdfBlob)
             const link = document.createElement("a")
             link.href = url
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)
