@@ -60,21 +60,33 @@ export const useInterview = () => {
     }
 
     const getResumePdf = async (interviewReportId) => {
-        setLoading(true)
         let response = null
         try {
             response = await generateResumePdf({ interviewReportId })
+
+            if (response.type === "application/json" || response.size < 200) {
+                const text = await response.text()
+                try {
+                    const errData = JSON.parse(text)
+                    alert(errData.message || "Failed to generate resume PDF.")
+                    return { success: false }
+                } catch (e) {}
+            }
+
             const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
             const link = document.createElement("a")
             link.href = url
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)
             document.body.appendChild(link)
             link.click()
+            link.remove()
+            setTimeout(() => window.URL.revokeObjectURL(url), 1000)
+            return { success: true }
         }
         catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
+            console.error("PDF Download Error:", error)
+            alert(error.response?.data?.message || "Failed to download resume PDF.")
+            return { success: false }
         }
     }
 
