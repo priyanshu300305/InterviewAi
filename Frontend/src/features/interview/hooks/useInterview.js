@@ -60,12 +60,28 @@ export const useInterview = () => {
     }
 
     const getResumePdf = async (interviewReportId) => {
-        let response = null
         try {
-            response = await generateResumePdf({ interviewReportId })
+            const response = await generateResumePdf({ interviewReportId })
 
-            if (response.type === "application/json" || response.size < 200) {
-                const text = await response.text()
+            if (typeof response === "string" && response.includes("<!DOCTYPE html>")) {
+                const printWin = window.open("", "_blank")
+                printWin.document.write(response)
+                printWin.document.close()
+                return { success: true }
+            }
+
+            const blob = new Blob([ response ], { type: response.type || "application/pdf" })
+
+            if (blob.type === "text/html") {
+                const text = await blob.text()
+                const printWin = window.open("", "_blank")
+                printWin.document.write(text)
+                printWin.document.close()
+                return { success: true }
+            }
+
+            if (blob.type === "application/json") {
+                const text = await blob.text()
                 try {
                     const errData = JSON.parse(text)
                     alert(errData.message || "Failed to generate resume PDF.")
@@ -73,7 +89,7 @@ export const useInterview = () => {
                 } catch (e) {}
             }
 
-            const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
+            const url = window.URL.createObjectURL(blob)
             const link = document.createElement("a")
             link.href = url
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)

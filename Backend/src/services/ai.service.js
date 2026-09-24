@@ -58,31 +58,36 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-            "--no-zygote",
-            "--single-process"
-        ]
-    })
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" })
+    try {
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--no-zygote",
+                "--single-process"
+            ]
+        })
+        const page = await browser.newPage();
+        await page.setContent(htmlContent, { waitUntil: "networkidle0" })
 
-    const pdfBuffer = await page.pdf({
-        format: "A4", margin: {
-            top: "20mm",
-            bottom: "20mm",
-            left: "15mm",
-            right: "15mm"
-        }
-    })
+        const pdfBuffer = await page.pdf({
+            format: "A4", margin: {
+                top: "20mm",
+                bottom: "20mm",
+                left: "15mm",
+                right: "15mm"
+            }
+        })
 
-    await browser.close()
+        await browser.close()
 
-    return pdfBuffer
+        return pdfBuffer
+    } catch (err) {
+        console.warn("Puppeteer PDF render fallback to HTML:", err.message)
+        return null
+    }
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
@@ -101,7 +106,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         2. CRITICAL: Do NOT invent fake names (like John Doe), fake jobs, fake universities, or placeholder text. You must use ONLY the factual information provided in the "Candidate's Original Resume Text" or "Self Description".
                         3. If the candidate's name or contact info is missing, leave it as "[Name Not Provided]" or omit it completely rather than fabricating a sample resume.
                         4. Tailor the existing experience and skills to highlight their relevance to the Target Job Description.
-                        5. The HTML content should be well-formatted, ATS-friendly, visually appealing, and professional.
+                        5. The HTML content should be well-formatted, ATS-friendly, visually appealing, and professional. Include clean CSS styling suitable for printing.
                         6. Keep it concise (1-2 pages maximum when rendered). Focus on quality.
                     `
 
@@ -116,10 +121,33 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
 
     const jsonContent = JSON.parse(response.text)
+    let htmlContent = jsonContent.html || ""
 
-    const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
+    if (htmlContent && !htmlContent.includes("window.print")) {
+        htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tailored Resume</title>
+<style>
+  @media print {
+    .no-print { display: none !important; }
+  }
+</style>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 24px; color: #1e293b; line-height: 1.5;">
+<div class="no-print" style="position: sticky; top: 10px; right: 10px; background: #0f172a; color: #ffffff; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <span style="font-weight: 500; font-size: 14px;">📄 Your Tailored Resume is Ready</span>
+  <button onclick="window.print()" style="background: #10b981; color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">Print / Save as PDF</button>
+</div>
+${htmlContent}
+</body>
+</html>`
+    }
 
-    return pdfBuffer
+    const pdfBuffer = await generatePdfFromHtml(htmlContent)
+
+    return { pdfBuffer, htmlContent }
 
 }
 
