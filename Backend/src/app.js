@@ -4,9 +4,19 @@ const cors = require("cors")
 
 const app = express()
 
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    "http://localhost:5173",
+    "http://localhost:3000"
+].filter(Boolean)
+
 app.use(cors({
     origin: function(origin, callback) {
-        callback(null, true);
+        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+            callback(null, true)
+        } else {
+            callback(null, true) // Allow requested origin for deployment flexibility
+        }
     },
     credentials: true
 }))
