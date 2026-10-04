@@ -32,6 +32,31 @@ const interviewReportSchema = z.object({
     title: z.string().describe("The title of the job for which the interview report is generated"),
 })
 
+const MODEL_FALLBACKS = [
+    "gemini-flash-latest",
+    "gemini-3.5-flash",
+    "gemini-3.8-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-2.5-flash"
+]
+
+async function generateContentWithFallback(params) {
+    let lastError = null
+    for (const modelName of MODEL_FALLBACKS) {
+        try {
+            const response = await ai.models.generateContent({
+                ...params,
+                model: modelName
+            })
+            return response
+        } catch (err) {
+            console.warn(`Gemini model ${modelName} failed (${err.status || err.message}), trying next fallback...`)
+            lastError = err
+        }
+    }
+    throw lastError
+}
+
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
 
 
@@ -41,8 +66,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
                         Job Description: ${jobDescription}
 `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+    const response = await generateContentWithFallback({
         contents: prompt,
         config: {
             responseMimeType: "application/json",
@@ -110,8 +134,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         6. Keep it concise (1-2 pages maximum when rendered). Focus on quality.
                     `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+    const response = await generateContentWithFallback({
         contents: prompt,
         config: {
             responseMimeType: "application/json",
